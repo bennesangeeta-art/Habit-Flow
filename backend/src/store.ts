@@ -10,6 +10,8 @@ const defaultData: AppData = {
 
 export class Store {
   private readonly filePath: string;
+  private readonly memoryFallback = structuredClone(defaultData);
+  private canUseFileStorage = true;
 
   constructor(filePath?: string) {
     this.filePath =
@@ -19,27 +21,50 @@ export class Store {
   }
 
   private ensureFile() {
-    const dirPath = path.dirname(this.filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
+    try {
+      const dirPath = path.dirname(this.filePath);
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+      }
 
-    if (!fs.existsSync(this.filePath)) {
-      fs.writeFileSync(this.filePath, JSON.stringify(defaultData, null, 2), "utf-8");
+      if (!fs.existsSync(this.filePath)) {
+        fs.writeFileSync(this.filePath, JSON.stringify(defaultData, null, 2), "utf-8");
+      }
+    } catch {
+      // In some deploy targets the filesystem can be unavailable/read-only.
+      // Fall back to in-memory storage to keep the service bootable.
+      this.canUseFileStorage = false;
     }
   }
 
   private readData(): AppData {
+    if (!this.canUseFileStorage) {
+      return structuredClone(this.memoryFallback);
+    }
+
     try {
       const raw = fs.readFileSync(this.filePath, "utf-8");
       return JSON.parse(raw) as AppData;
     } catch {
+      this.canUseFileStorage = false;
       return structuredClone(defaultData);
     }
   }
 
   private writeData(data: AppData) {
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), "utf-8");
+    if (!this.canUseFileStorage) {
+      this.memoryFallback.users = data.users;
+      this.memoryFallback.habitsByUserId = data.habitsByUserId;
+      return;
+    }
+
+    try {
+      fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), "utf-8");
+    } catch {
+      this.canUseFileStorage = false;
+      this.memoryFallback.users = data.users;
+      this.memoryFallback.habitsByUserId = data.habitsByUserId;
+    }
   }
 
   getUserByEmail(email: string): User | undefined {
