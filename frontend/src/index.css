@@ -1,0 +1,137 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Segoe UI, Roboto, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.subtitle {
+  color: #94a3b8;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.habitItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+input,
+button {
+  border-radius: 8px;
+  border: 1px solid #334155;
+  padding: 10px;
+  background: #0b1220;
+  color: #e2e8f0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #38bdf8;
+}
+
+.danger {
+  border-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.error {
+  color: #fda4af;
+}
+
+.badgeGood,
+.badgeBad {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin: 8px 0 0;
+}
+
+.badgeGood {
+  background: #052e16;
+  color: #86efac;
+  border: 1px solid #166534;
+}
+
+.badgeBad {
+  background: #3f0d0d;
+  color: #fecaca;
+  border: 1px solid #7f1d1d;
+}
+
+.tips {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.linkButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #93c5fd;
+  text-align: left;
+}
+
+@media (max-width: 760px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .habitItem {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: habitflow-backend
+    environment:
+      PORT: 3000
+      JWT_SECRET: change_me_for_production
+    volumes:
+      - habitflow-data:/app/data
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: habitflow-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  habitflow-data:
